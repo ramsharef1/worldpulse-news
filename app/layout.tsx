@@ -2,16 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Universities-Voice | Jordanian University News",
-  description: "Your source for news from Jordanian universities - Academic, Student Life, Research, Sports, Careers, and more",
-  keywords: ["Jordan", "Universities", "News", "Academic", "Students", "Faculty"],
+  title: "Universities-Voice | أخبار الجامعات الأردنية",
+  description: "منصة أخبار شاملة لجميع الجامعات الأردنية - Academic, Student Life, Research, Sports, Careers, and more",
+  keywords: ["Jordan", "Universities", "News", "Academic", "Students", "Faculty", "أردن", "جامعات"],
   authors: [{ name: "Universities-Voice Team" }],
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "ar_JO",
     url: "https://universitiesvoice.com",
-    title: "Universities-Voice",
-    description: "News from Jordanian Universities",
+    title: "Universities-Voice | أخبار الجامعات الأردنية",
+    description: "منصة أخبار شاملة لجميع الجامعات الأردنية",
     images: [
       {
         url: "https://universitiesvoice.com/og-image.png",

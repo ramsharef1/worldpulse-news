@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { CATEGORIES, NAV_ITEMS, FOOTER_LINKS } from '@/lib/constants';
+import { Logo } from '@/components/Logo';
 
 export default function Home() {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -40,14 +41,9 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-              UV
-            </div>
-            <h1 className="text-2xl font-bold text-blue-600">
-              {t('جامعات', 'Universities')}
-            </h1>
-          </div>
+          <a href="/" className="hover:opacity-80 transition">
+            <Logo size="md" showText={true} />
+          </a>
 
           {/* Controls */}
           <div className="flex items-center gap-4">
