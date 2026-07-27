@@ -1,54 +1,38 @@
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <!-- Background circle - subtle -->
+  <!-- ARABIC LOGO MARKER: Right-facing scroll/newspaper -->
   <circle cx="100" cy="100" r="95" stroke="#1E40AF" stroke-width="1" opacity="0.1"/>
 
   <g transform="translate(100, 100)">
-    <!-- MAIN: Large newspaper/scroll (prominent) -->
-    <g transform="translate(-28, -18)">
-      <!-- Outer scroll frame - bold -->
-      <path d="M 0 0 L 48 0 Q 52 0 52 4 L 52 40 Q 52 44 48 44 L 0 44 Q -4 44 -4 40 L -4 4 Q -4 0 0 0"
-            fill="none" stroke="#1E40AF" stroke-width="3.5"/>
+    <!-- Scroll/Paper shape - RTL right-aligned appearance -->
+    <g transform="translate(-30, -20)">
+      <path d="M 5 5 L 55 5 Q 58 5 58 8 L 58 45 Q 58 48 55 48 L 5 48 Q 2 48 2 45 L 2 8 Q 2 5 5 5"
+            fill="none" stroke="#1E40AF" stroke-width="3.5" stroke-linecap="round"/>
 
-      <!-- Headline bars - bold -->
-      <line x1="8" y1="10" x2="44" y2="10" stroke="#1AA89D" stroke-width="3" stroke-linecap="round"/>
+      <!-- Bold headline accent - TEAL for Arabic -->
+      <line x1="12" y1="14" x2="50" y2="14" stroke="#1AA89D" stroke-width="4" stroke-linecap="round"/>
 
       <!-- Content lines -->
-      <line x1="8" y1="20" x2="44" y2="20" stroke="#1E40AF" stroke-width="2" opacity="0.8"/>
-      <line x1="8" y1="28" x2="40" y2="28" stroke="#1E40AF" stroke-width="2" opacity="0.7"/>
-      <line x1="8" y1="36" x2="36" y2="36" stroke="#1AA89D" stroke-width="1.5" opacity="0.6"/>
-
-      <!-- Rolled ends (top) - accent -->
-      <circle cx="0" cy="0" r="3.5" fill="#1AA89D"/>
-      <circle cx="48" cy="0" r="3.5" fill="#1AA89D"/>
+      <line x1="12" y1="25" x2="48" y2="25" stroke="#1E40AF" stroke-width="2" opacity="0.8"/>
+      <line x1="12" y1="35" x2="42" y2="35" stroke="#1E40AF" stroke-width="2" opacity="0.7"/>
+      <line x1="12" y1="42" x2="38" y2="42" stroke="#1AA89D" stroke-width="1.5" opacity="0.6"/>
     </g>
 
-    <!-- Academic cap (smaller, accent element) -->
-    <g transform="translate(22, -32)">
-      <!-- Mortarboard -->
-      <ellipse cx="0" cy="0" rx="9" ry="2" fill="#1AA89D" opacity="0.7"/>
-      <!-- Front -->
-      <path d="M -7 0 L 7 0 L 6 5 L -6 5 Q -7 3 -7 0" fill="#1AA89D" opacity="0.5"/>
+    <!-- Academic cap - marks it as educational -->
+    <g transform="translate(20, -35)">
+      <ellipse cx="0" cy="0" rx="10" ry="2.5" fill="#1AA89D" opacity="0.7"/>
+      <path d="M -8 0 L 8 0 L 7 6 L -7 6 Q -8 4 -8 0" fill="#1AA89D" opacity="0.5"/>
     </g>
 
-    <!-- Voice element (speech wave - simplified) -->
-    <g transform="translate(25, 10)">
-      <!-- Single curved wave line (simplified) -->
-      <path d="M -8 -2 Q -4 -8 4 -2" fill="none" stroke="#1AA89D" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M -12 4 Q -6 0 6 4" fill="none" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    <!-- Voice wave - TWO CURVED LINES for Arabic -->
+    <g transform="translate(28, 12)">
+      <path d="M -10 -3 Q -5 -10 3 -3" fill="none" stroke="#1AA89D" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M -14 5 Q -7 -2 6 5" fill="none" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
     </g>
 
-    <!-- Decorative element - arabic-inspired flourish (simplified) -->
-    <g opacity="0.4" transform="translate(-38, -12)">
-      <path d="M 0 0 Q 3 2 6 0" fill="none" stroke="#1AA89D" stroke-width="1.5" stroke-linecap="round"/>
-      <path d="M 0 6 Q 3 4 6 6" fill="none" stroke="#1AA89D" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Subtle Arabic flourish -->
+    <g opacity="0.35" transform="translate(-40, -15)">
+      <path d="M 0 0 Q 4 3 8 0" fill="none" stroke="#1AA89D" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M 0 7 Q 4 4 8 7" fill="none" stroke="#1AA89D" stroke-width="1.5" stroke-linecap="round"/>
     </g>
-
-    <!-- Arabic Typography -->
-    <text x="0" y="50" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#1E40AF" text-anchor="middle" direction="rtl" dominant-baseline="middle">
-      جامعات
-    </text>
-    <text x="0" y="70" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#1AA89D" text-anchor="middle" direction="rtl" dominant-baseline="middle">
-      الصوت
-    </text>
   </g>
 </svg>
