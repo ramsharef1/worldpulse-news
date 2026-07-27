@@ -45,7 +45,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           {/* Logo */}
           <a href="/" className="hover:opacity-80 transition">
-            <Logo size="md" showText={true} />
+            <Logo size="md" showText={true} language={language} />
           </a>
 
           {/* Controls */}
