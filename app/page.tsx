@@ -41,7 +41,8 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="hover:opacity-80 transition">
+          <a href="/" className="hover:opacity-80 transition flex items-center gap-2">
+            <span className="text-xs bg-yellow-400 px-2 py-1 rounded">LOGO</span>
             <Logo size="md" showText={true} />
           </a>
 
