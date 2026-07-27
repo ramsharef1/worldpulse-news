@@ -16,18 +16,14 @@ export function Logo({ size = 'md', showText = true, language }: LogoProps) {
   const [currentLang, setCurrentLang] = useState<'ar' | 'en'>('ar');
 
   useEffect(() => {
-    // Get language from document or prop
-    if (language) {
-      setCurrentLang(language);
-    } else {
-      const docLang = document.documentElement.lang as 'ar' | 'en';
-      setCurrentLang(docLang === 'en' ? 'en' : 'ar');
-    }
+    // Always use the language prop if provided, otherwise check document
+    const lang = language || (document.documentElement.lang as 'ar' | 'en') || 'ar';
+    setCurrentLang(lang === 'en' ? 'en' : 'ar');
   }, [language]);
 
   const isArabic = currentLang === 'ar';
-  // Use refined logos
-  const logoSrc = isArabic ? '/logo-ar-refined.svg' : '/logo-en-refined.svg';
+  // Use refined logos with language-specific text
+  const logoSrc = isArabic ? '/logo-ar-refined.svg?v=2' : '/logo-en-refined.svg?v=2';
 
   return (
     <div className="flex items-center gap-3">
