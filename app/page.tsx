@@ -137,21 +137,34 @@ export default function Home() {
             <div className="text-center py-8 text-gray-500">{t('جاري التحميل...', 'Loading...')}</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg transition"
-                >
-                  <div className="h-40 bg-gradient-to-r from-blue-400 to-purple-400"></div>
-                  <div className="p-4">
-                    <p className="text-sm text-blue-600 font-semibold mb-2">{t('أكاديمي', 'Academic')}</p>
-                    <h4 className="font-bold mb-2">{t('عنوان المقالة', 'Article Title')}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('ملخص المقالة يظهر هنا', 'Article summary appears here')}
-                    </p>
+              {featuredArticles.length > 0 ? (
+                featuredArticles.map((article: any) => (
+                  <div
+                    key={article.id}
+                    className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg transition cursor-pointer"
+                  >
+                    <div className="h-40 bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center">
+                      <span className="text-white text-sm font-semibold">{article.category}</span>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">{article.category}</p>
+                      <h4 className="font-bold mb-2 line-clamp-2">
+                        {language === 'ar' ? article.title : article.title_en}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                        {language === 'ar' ? article.excerpt : article.excerpt_en}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                        {article.date} • {article.university} • {article.views} {t('مشاهدة', 'views')}
+                      </p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-8 text-gray-500">
+                  {t('لا توجد مقالات متاحة', 'No articles available')}
                 </div>
-              ))}
+              )}
             </div>
           )}
         </div>
