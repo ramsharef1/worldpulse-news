@@ -26,7 +26,8 @@ export function Logo({ size = 'md', showText = true, language }: LogoProps) {
   }, [language]);
 
   const isArabic = currentLang === 'ar';
-  const logoSrc = isArabic ? '/logo-ar.svg' : '/logo-en.svg';
+  // Use refined logos
+  const logoSrc = isArabic ? '/logo-ar-refined.svg' : '/logo-en-refined.svg';
 
   return (
     <div className="flex items-center gap-3">
@@ -42,13 +43,13 @@ export function Logo({ size = 'md', showText = true, language }: LogoProps) {
         <div className="flex flex-col leading-none">
           {isArabic ? (
             <>
-              <div className="text-sm font-bold tracking-tight text-blue-600 dark:text-blue-400">جامعات</div>
-              <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">الصوت</div>
+              <div className="text-sm font-bold tracking-tight text-blue-600 dark:text-teal-400">جامعات</div>
+              <div className="text-xs font-semibold text-teal-600 dark:text-teal-300">الصوت</div>
             </>
           ) : (
             <>
               <div className="text-sm font-bold tracking-tight text-blue-600 dark:text-blue-400">Universities</div>
-              <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">Voice</div>
+              <div className="text-xs font-semibold text-teal-600 dark:text-teal-400">Voice</div>
             </>
           )}
         </div>

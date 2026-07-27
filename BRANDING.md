@@ -30,7 +30,7 @@ Maintain minimum clear space equal to the logo mark's width around all sides.
 
 ### Primary Colors
 - **Blue**: `#1E40AF` - Primary brand color (trust, education)
-- **Purple**: `#7C3AED` - Secondary accent (innovation, forward-thinking)
+- **Teal/Cyan**: `#1AA89D` - Secondary accent (innovation, modern, forward-thinking)
 
 ### Neutral Colors
 - **Charcoal**: `#1F2937` - Primary text (dark mode)
