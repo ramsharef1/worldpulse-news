@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
   title: "Universities-Voice | أخبار الجامعات الأردنية",
@@ -39,9 +40,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#1E40AF" />
       </head>
       <body className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors font-sans">
-        <div className="flex flex-col min-h-screen">
-          {children}
-        </div>
+        <AuthProvider>
+          <div className="flex flex-col min-h-screen">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

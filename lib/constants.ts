@@ -98,6 +98,7 @@ export const NAV_ITEMS = [
   { name_ar: 'الأحداث', name_en: 'Events', href: '/events' },
   { name_ar: 'أعضاء هيئة التدريس', name_en: 'Faculty', href: '/faculty' },
   { name_ar: 'الوظائف', name_en: 'Jobs', href: '/jobs' },
+  { name_ar: 'إشاراتي المرجعية', name_en: 'Bookmarks', href: '/bookmarks' },
 ];
 
 export const FOOTER_LINKS = {

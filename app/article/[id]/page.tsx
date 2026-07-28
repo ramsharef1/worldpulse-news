@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { Button, Badge, Grid, Card, ArticleCard, Divider } from '@/components/UIComponents';
+import { ArticleReactions } from '@/components/ArticleReactions';
+import { Comments } from '@/components/Comments';
 import { CATEGORIES, NAV_ITEMS, FOOTER_LINKS } from '@/lib/constants';
+import { useAuth } from '@/lib/AuthContext';
 
 interface Article {
   id: string;
@@ -34,6 +37,7 @@ interface ShareMetadata {
 
 export default function ArticleDetailPage() {
   const params = useParams();
+  const { user: authUser, isAuthenticated } = useAuth();
   const articleId = params?.id as string;
 
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -437,6 +441,19 @@ export default function ArticleDetailPage() {
 
             <Divider className="my-12" />
 
+            {/* Article Reactions */}
+            <div className="mb-12">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6">
+                {t('شارك وحفظ المقالة', 'Engage with this article')}
+              </h3>
+              <ArticleReactions
+                articleId={articleId}
+                language={language}
+              />
+            </div>
+
+            <Divider className="my-12" />
+
             {/* Newsletter Signup CTA */}
             <div className="mb-12 p-8 bg-gradient-to-r from-blue-50 to-teal-50 dark:from-blue-900/20 dark:to-teal-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -502,6 +519,20 @@ export default function ArticleDetailPage() {
                 </div>
               </section>
             )}
+
+            <Divider className="my-16" />
+
+            {/* Comments Section */}
+            <section className="mb-16">
+              <Comments
+                articleId={articleId}
+                language={language}
+                isAuthenticated={isAuthenticated}
+                userName={authUser ? (language === 'ar' ? authUser.name_ar : authUser.name_en) : undefined}
+                userId={authUser?.id}
+                userAvatar={authUser?.profile_image || 'https://i.pravatar.cc/150?img=99'}
+              />
+            </section>
           </div>
         </article>
 
