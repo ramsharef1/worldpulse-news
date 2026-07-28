@@ -46,8 +46,8 @@ export default function SearchPage() {
 
     let results = articles.filter((article: any) => {
       const query = searchQuery.toLowerCase();
-      const title = (language === 'ar' ? article.title_ar : article.title_en || '').toLowerCase();
-      const excerpt = (language === 'ar' ? article.excerpt_ar : article.excerpt_en || '').toLowerCase();
+      const title = (language === 'ar' ? (article.title || '') : (article.title_en || '')).toLowerCase();
+      const excerpt = (language === 'ar' ? (article.excerpt || '') : (article.excerpt_en || '')).toLowerCase();
       return title.includes(query) || excerpt.includes(query);
     });
 
@@ -121,8 +121,8 @@ export default function SearchPage() {
                   <div className="h-40 bg-gradient-to-r from-blue-400 to-teal-400 flex items-center justify-center"><span className="text-white text-sm font-semibold">{article.category}</span></div>
                   <div className="p-4">
                     <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">{article.category}</p>
-                    <h4 className="font-bold mb-2 line-clamp-2">{language === 'ar' ? article.title_ar : article.title_en}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">{language === 'ar' ? article.excerpt_ar : article.excerpt_en}</p>
+                    <h4 className="font-bold mb-2 line-clamp-2">{language === 'ar' ? article.title : article.title_en}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">{language === 'ar' ? article.excerpt : article.excerpt_en}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-500">{article.date} • {article.university} • {article.views} {t('مشاهدة', 'views')}</p>
                   </div>
                 </Link>
