@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { CATEGORIES, NAV_ITEMS, FOOTER_LINKS } from '@/lib/constants';
 import { Logo } from '@/components/Logo';
+import { TrendingWidget } from '@/components/TrendingWidget';
+import { UNIVERSITIES_DATA } from '@/lib/universities-data';
 
 export default function Home() {
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -126,44 +128,81 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Articles */}
+      {/* Featured Articles + Sidebar */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h3 className="text-2xl font-bold mb-8">{t('المقالات المميزة', 'Featured Articles')}</h3>
-          {isLoading ? (
-            <div className="text-center py-8 text-gray-500">{t('جاري التحميل...', 'Loading...')}</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredArticles.length > 0 ? (
-                featuredArticles.map((article: any) => (
-                  <div
-                    key={article.id}
-                    className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg transition cursor-pointer"
-                  >
-                    <div className="h-40 bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">{article.category}</span>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">{article.category}</p>
-                      <h4 className="font-bold mb-2 line-clamp-2">
-                        {language === 'ar' ? article.title : article.title_en}
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                        {language === 'ar' ? article.excerpt : article.excerpt_en}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">
-                        {article.date} • {article.university} • {article.views} {t('مشاهدة', 'views')}
-                      </p>
-                    </div>
-                  </div>
-                ))
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Main content — featured articles (2/3 width on desktop) */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-2xl font-bold mb-8">{t('المقالات المميزة', 'Featured Articles')}</h3>
+              {isLoading ? (
+                <div className="text-center py-8 text-gray-500">{t('جاري التحميل...', 'Loading...')}</div>
               ) : (
-                <div className="col-span-full text-center py-8 text-gray-500">
-                  {t('لا توجد مقالات متاحة', 'No articles available')}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {featuredArticles.length > 0 ? (
+                    featuredArticles.map((article: any) => (
+                      <div
+                        key={article.id}
+                        className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg transition cursor-pointer"
+                      >
+                        <div className="h-40 bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center">
+                          <span className="text-white text-sm font-semibold">{article.category}</span>
+                        </div>
+                        <div className="p-4">
+                          <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">{article.category}</p>
+                          <h4 className="font-bold mb-2 line-clamp-2">
+                            {language === 'ar' ? article.title : article.title_en}
+                          </h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                            {language === 'ar' ? article.excerpt : article.excerpt_en}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500">
+                            {article.date} • {article.university} • {article.views} {t('مشاهدة', 'views')}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-8 text-gray-500">
+                      {t('لا توجد مقالات متاحة', 'No articles available')}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
+
+            {/* Sidebar (1/3 width on desktop) */}
+            <aside className="w-full md:w-80 lg:w-96 shrink-0 flex flex-col gap-6">
+              {/* Trending Widget */}
+              <TrendingWidget language={language} />
+
+              {/* Universities Quick-links */}
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                <h3 className="text-base font-bold mb-4 text-gray-900 dark:text-gray-100">
+                  🎓 {t('الجامعات', 'Universities')}
+                </h3>
+                <ul className="space-y-2">
+                  {UNIVERSITIES_DATA.slice(0, 6).map((uni) => (
+                    <li key={uni.slug}>
+                      <a
+                        href={`/universities/${uni.slug}`}
+                        className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-teal-500 shrink-0" />
+                        {language === 'ar' ? uni.name_ar : uni.name_en}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="/universities"
+                  className="mt-4 block text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  {t('عرض الكل ←', 'View all →')}
+                </a>
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
 
