@@ -1,0 +1,3 @@
+{
+  "claudeMd": "## Deployment Strategy\n\n**Default: Local Deployment**\n- All code changes are deployed locally first\n- Testing and verification happen on localhost\n- Only deploy to production/online when explicitly requested\n- Verify all online code is synced locally before making changes\n\n**When to Deploy Online:**\n- Only on explicit user request (\"deploy to production\", \"deploy online\", etc.)\n- Never auto-deploy without confirmation\n- Always confirm the deployment target before proceeding\n\n**Workflow:**\n1. Make changes locally\n2. Test locally\n3. Commit to git\n4. Wait for explicit deployment request\n5. Verify before pushing to remote/production"
+}
