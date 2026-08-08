@@ -159,16 +159,16 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h3 className="text-2xl font-bold mb-8">{t('الجامعات', 'Universities')}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {['UoJ', 'JUST', 'HU', 'YU', 'BAU', 'MU', 'AAAU', 'MEU'].map((uni, idx) => (
+            {UNIVERSITIES_DATA.slice(0, 12).map((uni) => (
               <a
-                key={idx}
-                href={`/universities/${idx}`}
+                key={uni.slug}
+                href={`/universities/${uni.slug}`}
                 className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-blue-400 transition text-center"
               >
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-blue-600">
-                  {uni}
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-blue-600 text-xs">
+                  {uni.name_en.split(' ').map(w => w[0]).join('').slice(0, 3)}
                 </div>
-                <p className="text-xs font-medium">{uni}</p>
+                <p className="text-xs font-medium">{language === 'ar' ? uni.name_ar : uni.name_en}</p>
               </a>
             ))}
           </div>

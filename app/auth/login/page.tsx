@@ -96,7 +96,7 @@ export default function LoginPage() {
             {t('تسجيل الدخول', 'Login')}
           </h1>
           <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
-            {t('رحباً بك في أخبار الجامعات', 'Welcome to Universities-Voice')}
+            {t('مرحبًا بك في صوت الجامعات', 'Welcome to Universities-Voice')}
           </p>
 
           {/* Error Message */}

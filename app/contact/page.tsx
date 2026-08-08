@@ -24,7 +24,7 @@ export default function ContactPage() {
         </div>
         <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <div className="text-3xl mb-3">📱</div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">+962 6 123 4567</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">+962 6 XXX XXXX</p>
         </div>
         <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <div className="text-3xl mb-3">📍</div>

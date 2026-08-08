@@ -143,7 +143,7 @@ export default function SignupPage() {
             {t('إنشاء حساب', 'Create Account')}
           </h1>
           <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
-            {t('انضم إلى مجتمع أخبار الجامعات', 'Join Universities-Voice community')}
+            {t('انضم إلى مجتمع صوت الجامعات', 'Join the Universities-Voice community')}
           </p>
 
           {/* Error Message */}
