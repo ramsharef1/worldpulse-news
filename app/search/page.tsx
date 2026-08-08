@@ -59,7 +59,8 @@ export default function SearchPage() {
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-6">{t('البحث عن الأخبار', 'Search News')}</h1>
           <div className="flex gap-4 mb-6">
-            <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t('ابحث عن الأخبار...', 'Search articles...')} className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" />
+            <label htmlFor="search-input" className="sr-only">{t('ابحث عن الأخبار', 'Search articles')}</label>
+            <input id="search-input" type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t('ابحث عن الأخبار...', 'Search articles...')} className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" />
             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">{t('بحث', 'Search')}</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

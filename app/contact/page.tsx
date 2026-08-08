@@ -33,9 +33,18 @@ export default function ContactPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <input type="text" placeholder={t('الاسم', 'Name')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" required />
-        <input type="email" placeholder={t('البريد الإلكتروني', 'Email')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" required />
-        <textarea placeholder={t('الرسالة', 'Message')} rows={5} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white resize-none" required />
+        <div>
+          <label htmlFor="contact-name" className="block text-sm font-medium mb-1">{t('الاسم', 'Name')}</label>
+          <input id="contact-name" type="text" placeholder={t('الاسم', 'Name')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" required />
+        </div>
+        <div>
+          <label htmlFor="contact-email" className="block text-sm font-medium mb-1">{t('البريد الإلكتروني', 'Email')}</label>
+          <input id="contact-email" type="email" placeholder={t('البريد الإلكتروني', 'Email')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white" required />
+        </div>
+        <div>
+          <label htmlFor="contact-message" className="block text-sm font-medium mb-1">{t('الرسالة', 'Message')}</label>
+          <textarea id="contact-message" placeholder={t('الرسالة', 'Message')} rows={5} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white resize-none" required />
+        </div>
         <button type="submit" className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">{t('إرسال', 'Send')}</button>
         {submitted && <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg text-green-800 dark:text-green-200">✓ {t('تم الإرسال', 'Sent!')}</div>}
       </form>

@@ -34,9 +34,9 @@ export default function Home() {
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">
+            <h1 className="text-4xl font-bold mb-4">
               {t('أخبار الجامعات الأردنية', 'Jordanian University News')}
-            </h2>
+            </h1>
             <p className="text-lg opacity-90 mb-6">
               {t(
                 'تابع أحدث الأخبار من جميع الجامعات الأردنية',
@@ -44,7 +44,9 @@ export default function Home() {
               )}
             </p>
             <div className="flex gap-4">
+              <label htmlFor="hero-search" className="sr-only">{t('ابحث عن الأخبار', 'Search news')}</label>
               <input
+                id="hero-search"
                 type="text"
                 placeholder={t('ابحث عن الأخبار...', 'Search news...')}
                 className="flex-1 px-4 py-3 rounded-lg text-gray-900"
@@ -179,9 +181,9 @@ export default function Home() {
       <section className="py-12 bg-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4">{t('كن جزءاً من المجتمع', 'Join Our Community')}</h3>
-          <button className="px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100">
+          <a href="/auth/signup" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100">
             {t('التسجيل الآن', 'Sign Up Now')}
-          </button>
+          </a>
         </div>
       </section>
     </>

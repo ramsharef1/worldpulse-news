@@ -20,7 +20,7 @@ export function SiteFooter() {
               )}
             </p>
           </div>
-          <div>
+          <nav aria-label={t('روابط سريعة', 'Quick Links')}>
             <h4 className="font-semibold mb-4">{t('روابط سريعة', 'Quick Links')}</h4>
             <ul className="space-y-2 text-sm">
               {Object.values(FOOTER_LINKS).map((link) => (
@@ -31,8 +31,8 @@ export function SiteFooter() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div>
+          </nav>
+          <nav aria-label={t('التصنيفات', 'Categories')}>
             <h4 className="font-semibold mb-4">{t('التصنيفات', 'Categories')}</h4>
             <ul className="space-y-2 text-sm">
               {CATEGORIES.slice(0, 5).map((cat) => (
@@ -43,9 +43,9 @@ export function SiteFooter() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
-        <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500 dark:text-gray-500">
+        <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500 dark:text-gray-400">
           <p>&copy; 2026 Universities-Voice. {t('جميع الحقوق محفوظة', 'All rights reserved.')}</p>
         </div>
       </div>

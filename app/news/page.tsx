@@ -117,7 +117,7 @@ export default function NewsPage() {
   };
 
   return (
-    <main className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4 py-10">
       {/* Page title */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold">{t('آخر الأخبار الجامعية', 'Latest University News')}</h1>
@@ -156,7 +156,9 @@ export default function NewsPage() {
         </div>
 
         {/* University dropdown */}
+        <label htmlFor="news-university-filter" className="sr-only">{t('تصفية حسب الجامعة', 'Filter by university')}</label>
         <select
+          id="news-university-filter"
           value={selectedUniversity}
           onChange={e => { setSelectedUniversity(e.target.value); setVisibleCount(12); }}
           className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm"
@@ -293,6 +295,6 @@ export default function NewsPage() {
           </p>
         </>
       )}
-    </main>
+    </div>
   );
 }
