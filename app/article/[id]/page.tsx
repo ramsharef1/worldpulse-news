@@ -259,6 +259,27 @@ export default function ArticleDetailPage() {
         <meta name="twitter:title" content={language === 'ar' ? article.title : article.title_en} />
         <meta name="twitter:description" content={language === 'ar' ? article.excerpt : article.excerpt_en} />
         {article.image && <meta name="twitter:image" content={article.image} />}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsArticle',
+              headline: language === 'ar' ? article.title : article.title_en,
+              description: language === 'ar' ? article.excerpt : article.excerpt_en,
+              datePublished: article.date,
+              publisher: {
+                '@type': 'Organization',
+                name: 'Universities-Voice',
+                url: 'https://universitiesvoice.com',
+              },
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `https://universitiesvoice.com/article/${article.id}`,
+              },
+            }),
+          }}
+        />
       </head>
 
       {/* Article Content */}
