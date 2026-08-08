@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "palette": {
+    "primary": "#4f8fff",
+    "secondary": "#2dd4ae",
+    "accent": "#a855f7",
+    "dark": "#1e3a5f"
+  },
+  "assets": [
+    {
+      "id": "favicon",
+      "path": "/favicon.svg",
+      "type": "favicon",
+      "dimensions": "32x32",
+      "format": "svg",
+      "alt": { "ar": "صوت الجامعات", "en": "Universities-Voice" },
+      "placement": "app/layout.tsx metadata.icons"
+    },
+    {
+      "id": "og-image",
+      "path": "/og-image.svg",
+      "type": "og-card",
+      "dimensions": "1200x630",
+      "format": "svg",
+      "alt": { "ar": "صوت الجامعات - منصة أخبار الجامعات الأردنية", "en": "Universities-Voice - Jordanian University News Platform" },
+      "placement": "app/layout.tsx metadata.openGraph.images"
+    },
+    {
+      "id": "article-placeholder",
+      "path": "/images/article-placeholder.svg",
+      "type": "placeholder",
+      "dimensions": "600x400",
+      "format": "svg",
+      "alt": { "ar": "صورة المقال", "en": "Article image" },
+      "placement": "article cards across news, homepage, search"
+    },
+    {
+      "id": "logo-ar",
+      "path": "/logo-ar-refined.svg",
+      "type": "logo",
+      "format": "svg",
+      "alt": { "ar": "صوت الجامعات", "en": "Universities-Voice" },
+      "placement": "components/Logo.tsx (Arabic mode)"
+    },
+    {
+      "id": "logo-en",
+      "path": "/logo-en-refined.svg",
+      "type": "logo",
+      "format": "svg",
+      "alt": { "ar": "صوت الجامعات", "en": "Universities-Voice" },
+      "placement": "components/Logo.tsx (English mode)"
+    }
+  ]
+}

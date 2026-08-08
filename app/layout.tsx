@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     description: "منصة أخبار شاملة لجميع الجامعات الأردنية",
     images: [
       {
-        url: "https://universitiesvoice.com/og-image.png",
+        url: "https://universitiesvoice.com/og-image.svg",
         width: 1200,
         height: 630,
         alt: "Universities-Voice - صوت الجامعات",
