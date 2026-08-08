@@ -1,20 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { EnhancedHeader, EnhancedNav, EnhancedFooter } from '@/components/EnhancedLayout';
+import { useState } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function BreakingNews() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { t } = useLanguage();
   const [autoRefresh, setAutoRefresh] = useState(true);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
-
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
 
   const breakingNews = [
     {
@@ -48,15 +39,6 @@ export default function BreakingNews() {
 
   return (
     <>
-      <EnhancedHeader
-        language={language}
-        darkMode={darkMode}
-        onLanguageChange={setLanguage}
-        onDarkModeChange={setDarkMode}
-      />
-
-      <EnhancedNav language={language} items={[]} />
-
       {/* Live Ticker */}
       <div className="bg-red-600 text-white py-3 sticky top-16 z-30 border-b-4 border-red-700">
         <div className="container mx-auto px-4">
@@ -175,8 +157,6 @@ export default function BreakingNews() {
           </div>
         </div>
       </section>
-
-      <EnhancedFooter language={language} />
     </>
   );
 }

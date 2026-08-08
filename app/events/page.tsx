@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Header } from '@/components/Header';
+import { useState, useMemo } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
 
 interface Event {
   id: number;
@@ -212,21 +212,10 @@ const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو
 const MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 export default function EventsPage() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, t } = useLanguage();
   const [tab, setTab] = useState<'upcoming' | 'past'>('upcoming');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
-
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [language]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -264,141 +253,132 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-      <Header
-        language={language}
-        darkMode={darkMode}
-        onLanguageChange={setLanguage}
-        onDarkModeChange={setDarkMode}
-      />
+    <main className="container mx-auto px-4 py-10">
+      {/* Page title */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold">{t('أحداث الجامعات', 'University Events')}</h1>
+        <p className="mt-2 text-gray-500 dark:text-gray-400">
+          {t('اكتشف الفعاليات والأحداث القادمة في الجامعات الأردنية', 'Discover upcoming events at Jordanian universities')}
+        </p>
+      </div>
 
-      <main className="container mx-auto px-4 py-10">
-        {/* Page title */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">{t('أحداث الجامعات', 'University Events')}</h1>
-          <p className="mt-2 text-gray-500 dark:text-gray-400">
-            {t('اكتشف الفعاليات والأحداث القادمة في الجامعات الأردنية', 'Discover upcoming events at Jordanian universities')}
-          </p>
-        </div>
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-800">
+        {(['upcoming', 'past'] as const).map(tabKey => (
+          <button
+            key={tabKey}
+            onClick={() => setTab(tabKey)}
+            className={`px-6 py-2.5 text-sm font-semibold border-b-2 -mb-px transition ${
+              tab === tabKey
+                ? 'border-blue-700 text-blue-700 dark:text-blue-400 dark:border-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            {tabKey === 'upcoming' ? t('القادمة', 'Upcoming') : t('السابقة', 'Past')}
+          </button>
+        ))}
+      </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-800">
-          {(['upcoming', 'past'] as const).map(tabKey => (
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-8 items-center">
+        {/* Category chips */}
+        <div className="flex flex-wrap gap-2 flex-1">
+          {CATEGORIES.map(cat => (
             <button
-              key={tabKey}
-              onClick={() => setTab(tabKey)}
-              className={`px-6 py-2.5 text-sm font-semibold border-b-2 -mb-px transition ${
-                tab === tabKey
-                  ? 'border-blue-700 text-blue-700 dark:text-blue-400 dark:border-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
+                selectedCategory === cat
+                  ? 'bg-blue-700 text-white border-blue-700'
+                  : 'border-gray-300 dark:border-gray-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
               }`}
             >
-              {tabKey === 'upcoming' ? t('القادمة', 'Upcoming') : t('السابقة', 'Past')}
+              {t(CATEGORY_LABELS[cat].ar, CATEGORY_LABELS[cat].en)}
             </button>
           ))}
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-8 items-center">
-          {/* Category chips */}
-          <div className="flex flex-wrap gap-2 flex-1">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
-                  selectedCategory === cat
-                    ? 'bg-blue-700 text-white border-blue-700'
-                    : 'border-gray-300 dark:border-gray-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
-              >
-                {t(CATEGORY_LABELS[cat].ar, CATEGORY_LABELS[cat].en)}
-              </button>
-            ))}
-          </div>
+        {/* Month filter */}
+        <select
+          value={selectedMonth}
+          onChange={e => setSelectedMonth(e.target.value)}
+          className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm"
+        >
+          <option value="all">{t('كل الأشهر', 'All Months')}</option>
+          {availableMonths.map(m => (
+            <option key={m} value={m}>
+              {language === 'ar' ? MONTHS_AR[m] : MONTHS_EN[m]}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          {/* Month filter */}
-          <select
-            value={selectedMonth}
-            onChange={e => setSelectedMonth(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm"
-          >
-            <option value="all">{t('كل الأشهر', 'All Months')}</option>
-            {availableMonths.map(m => (
-              <option key={m} value={m}>
-                {language === 'ar' ? MONTHS_AR[m] : MONTHS_EN[m]}
-              </option>
-            ))}
-          </select>
+      {/* Events grid */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <svg className="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p className="text-lg">{t('لا توجد فعاليات', 'No events found')}</p>
         </div>
-
-        {/* Events grid */}
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-            <svg className="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="text-lg">{t('لا توجد فعاليات', 'No events found')}</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filtered.map(ev => {
-              const { day, month, year } = getEventDate(ev.date);
-              return (
-                <div
-                  key={ev.id}
-                  className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-600 transition group"
-                >
-                  <div className="relative">
-                    <img
-                      src={ev.image_url}
-                      alt={language === 'ar' ? ev.title_ar : ev.title_en}
-                      className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
-                    />
-                    {/* Date badge */}
-                    <div className="absolute top-3 start-3 bg-blue-700 text-white rounded-xl px-3 py-2 text-center shadow-lg min-w-[56px]">
-                      <div className="text-2xl font-bold leading-none">{day}</div>
-                      <div className="text-xs font-medium mt-0.5 uppercase">{month}</div>
-                      <div className="text-xs opacity-80">{year}</div>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[ev.category]}`}>
-                        {t(CATEGORY_LABELS[ev.category].ar, CATEGORY_LABELS[ev.category].en)}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-                        {language === 'ar' ? ev.university_ar : ev.university_en}
-                      </span>
-                    </div>
-
-                    <h2 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1 leading-snug">
-                      {language === 'ar' ? ev.title_ar : ev.title_en}
-                    </h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
-                      {language === 'ar' ? ev.description_ar : ev.description_en}
-                    </p>
-
-                    <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 mb-4">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span>{language === 'ar' ? ev.location_ar : ev.location_en}</span>
-                    </div>
-
-                    <button className="w-full py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold transition">
-                      {t('سجّل الآن', 'Register Now')}
-                    </button>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filtered.map(ev => {
+            const { day, month, year } = getEventDate(ev.date);
+            return (
+              <div
+                key={ev.id}
+                className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-600 transition group"
+              >
+                <div className="relative">
+                  <img
+                    src={ev.image_url}
+                    alt={language === 'ar' ? ev.title_ar : ev.title_en}
+                    className="w-full h-44 object-cover group-hover:scale-105 transition duration-300"
+                  />
+                  {/* Date badge */}
+                  <div className="absolute top-3 start-3 bg-blue-700 text-white rounded-xl px-3 py-2 text-center shadow-lg min-w-[56px]">
+                    <div className="text-2xl font-bold leading-none">{day}</div>
+                    <div className="text-xs font-medium mt-0.5 uppercase">{month}</div>
+                    <div className="text-xs opacity-80">{year}</div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </main>
-    </div>
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[ev.category]}`}>
+                      {t(CATEGORY_LABELS[ev.category].ar, CATEGORY_LABELS[ev.category].en)}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                      {language === 'ar' ? ev.university_ar : ev.university_en}
+                    </span>
+                  </div>
+
+                  <h2 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1 leading-snug">
+                    {language === 'ar' ? ev.title_ar : ev.title_en}
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
+                    {language === 'ar' ? ev.description_ar : ev.description_en}
+                  </p>
+
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 mb-4">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>{language === 'ar' ? ev.location_ar : ev.location_en}</span>
+                  </div>
+
+                  <button className="w-full py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold transition">
+                    {t('سجّل الآن', 'Register Now')}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </main>
   );
 }

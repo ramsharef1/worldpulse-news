@@ -2,49 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
+import { useLanguage } from '@/lib/LanguageContext';
 import { EditProfile } from '@/components/EditProfile';
 import { SavedArticles } from '@/components/SavedArticles';
 import { UserComments } from '@/components/UserComments';
-import { Logo } from '@/components/Logo';
 import type { UserProfile, UserComment } from '@/lib/types';
 
 type TabType = 'profile' | 'saved' | 'comments';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading: authLoading, logout, updateProfile, deleteAccount } = useAuth();
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  // Initialize language and dark mode from localStorage
-  useEffect(() => {
-    const savedLanguage = (localStorage.getItem('univerisitiesvoice_language') || 'ar') as 'ar' | 'en';
-    const savedDarkMode = localStorage.getItem('univerisitiesvoice_darkmode') === 'true';
-
-    setLanguage(savedLanguage);
-    setDarkMode(savedDarkMode);
-
-    document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = savedLanguage;
-    document.documentElement.classList.toggle('dark', savedDarkMode);
-  }, []);
-
-  // Handle language and dark mode changes
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    localStorage.setItem('univerisitiesvoice_language', language);
-  }, [language]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    localStorage.setItem('univerisitiesvoice_darkmode', darkMode ? 'true' : 'false');
-  }, [darkMode]);
 
   // Load user profile from localStorage
   useEffect(() => {
@@ -80,8 +54,6 @@ export default function ProfilePage() {
       setIsLoading(false);
     }
   }, [user, isAuthenticated, authLoading]);
-
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
 
   const handleLogout = async () => {
     if (window.confirm(t('هل أنت متأكد من تسجيل الخروج؟', 'Are you sure you want to log out?'))) {
@@ -163,30 +135,6 @@ export default function ProfilePage() {
 
   return (
     <>
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="hover:opacity-80 transition">
-            <Logo size="md" showText={true} language={language} />
-          </a>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-medium"
-            >
-              {language === 'ar' ? 'EN' : 'AR'}
-            </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Profile Hero Section */}
@@ -405,13 +353,6 @@ export default function ProfilePage() {
         onSave={handleSaveProfile}
         language={language}
       />
-
-      {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 py-8 mt-12">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>&copy; 2024 Universities-Voice. {t('جميع الحقوق محفوظة', 'All rights reserved')}</p>
-        </div>
-      </footer>
     </>
   );
 }

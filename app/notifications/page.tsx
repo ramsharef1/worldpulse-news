@@ -1,60 +1,60 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { EnhancedHeader, EnhancedNav, EnhancedFooter } from '@/components/EnhancedLayout';
+import { useState } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Notifications() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { t } = useLanguage();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [notifications, setNotifications] = useState<any[]>([
     {
       id: 1,
       type: 'news',
-      title: t('أخبار جديدة', 'New Article Published'),
-      description: t('تم نشر مقالة جديدة في التصنيف المفضل لديك', 'A new article was published in your favorite category'),
-      time: t('قبل 2 دقيقة', '2 minutes ago'),
       read: false,
       icon: '📰',
     },
     {
       id: 2,
       type: 'event',
-      title: t('حدث قادم', 'Upcoming Event'),
-      description: t('لا تفوت هذا الحدث المهم في جامعة الأردن', 'Don\'t miss this important event at University of Jordan'),
-      time: t('قبل 15 دقيقة', '15 minutes ago'),
       read: false,
       icon: '📅',
     },
     {
       id: 3,
       type: 'job',
-      title: t('فرصة عمل جديدة', 'New Job Opportunity'),
-      description: t('وظيفة تطابق مهاراتك متاحة الآن', 'A job matching your skills is now available'),
-      time: t('قبل 1 ساعة', '1 hour ago'),
       read: true,
       icon: '💼',
     },
     {
       id: 4,
       type: 'comment',
-      title: t('تعليق جديد', 'New Comment'),
-      description: t('أضاف شخص ما تعليقاً على مقالتك', 'Someone commented on your article'),
-      time: t('قبل 2 ساعة', '2 hours ago'),
       read: true,
       icon: '💬',
     },
   ]);
 
-  function t(ar: string, en: string) {
-    return language === 'ar' ? ar : en;
-  }
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
+  const notificationContent: Record<number, { title: string; description: string; time: string }> = {
+    1: {
+      title: t('أخبار جديدة', 'New Article Published'),
+      description: t('تم نشر مقالة جديدة في التصنيف المفضل لديك', 'A new article was published in your favorite category'),
+      time: t('قبل 2 دقيقة', '2 minutes ago'),
+    },
+    2: {
+      title: t('حدث قادم', 'Upcoming Event'),
+      description: t('لا تفوت هذا الحدث المهم في جامعة الأردن', 'Don\'t miss this important event at University of Jordan'),
+      time: t('قبل 15 دقيقة', '15 minutes ago'),
+    },
+    3: {
+      title: t('فرصة عمل جديدة', 'New Job Opportunity'),
+      description: t('وظيفة تطابق مهاراتك متاحة الآن', 'A job matching your skills is now available'),
+      time: t('قبل 1 ساعة', '1 hour ago'),
+    },
+    4: {
+      title: t('تعليق جديد', 'New Comment'),
+      description: t('أضاف شخص ما تعليقاً على مقالتك', 'Someone commented on your article'),
+      time: t('قبل 2 ساعة', '2 hours ago'),
+    },
+  };
 
   const filteredNotifications = filter === 'unread' ? notifications.filter((n) => !n.read) : notifications;
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -73,15 +73,6 @@ export default function Notifications() {
 
   return (
     <>
-      <EnhancedHeader
-        language={language}
-        darkMode={darkMode}
-        onLanguageChange={setLanguage}
-        onDarkModeChange={setDarkMode}
-      />
-
-      <EnhancedNav language={language} items={[]} />
-
       {/* Header */}
       <section className="py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="container mx-auto px-4">
@@ -139,50 +130,53 @@ export default function Notifications() {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto space-y-4">
             {filteredNotifications.length > 0 ? (
-              filteredNotifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  onClick={() => !notification.read && markAsRead(notification.id)}
-                  className={`p-6 rounded-xl border-2 transition cursor-pointer ${
-                    notification.read
-                      ? 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'
-                      : 'border-blue-300 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/10 hover:border-blue-400'
-                  }`}
-                >
-                  <div className="flex gap-4">
-                    {/* Icon */}
-                    <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 text-xl">
-                      {notification.icon}
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4 mb-1">
-                        <h3 className={`font-bold ${notification.read ? 'text-gray-900 dark:text-white' : 'text-blue-900 dark:text-blue-100'}`}>
-                          {notification.title}
-                        </h3>
-                        {!notification.read && <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-2" />}
+              filteredNotifications.map((notification) => {
+                const content = notificationContent[notification.id];
+                return (
+                  <div
+                    key={notification.id}
+                    onClick={() => !notification.read && markAsRead(notification.id)}
+                    className={`p-6 rounded-xl border-2 transition cursor-pointer ${
+                      notification.read
+                        ? 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'
+                        : 'border-blue-300 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/10 hover:border-blue-400'
+                    }`}
+                  >
+                    <div className="flex gap-4">
+                      {/* Icon */}
+                      <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 text-xl">
+                        {notification.icon}
                       </div>
 
-                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{notification.description}</p>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4 mb-1">
+                          <h3 className={`font-bold ${notification.read ? 'text-gray-900 dark:text-white' : 'text-blue-900 dark:text-blue-100'}`}>
+                            {content?.title}
+                          </h3>
+                          {!notification.read && <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-2" />}
+                        </div>
 
-                      <p className="text-xs text-gray-500 dark:text-gray-500">{notification.time}</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{content?.description}</p>
+
+                        <p className="text-xs text-gray-500 dark:text-gray-500">{content?.time}</p>
+                      </div>
+
+                      {/* Actions */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification.id);
+                        }}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 transition text-xl"
+                        title={t('حذف', 'Delete')}
+                      >
+                        ✕
+                      </button>
                     </div>
-
-                    {/* Actions */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteNotification(notification.id);
-                      }}
-                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 transition text-xl"
-                      title={t('حذف', 'Delete')}
-                    >
-                      ✕
-                    </button>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-center py-12">
                 <div className="text-5xl mb-4">✨</div>
@@ -212,8 +206,6 @@ export default function Notifications() {
           </a>
         </div>
       </section>
-
-      <EnhancedFooter language={language} />
     </>
   );
 }

@@ -5,7 +5,8 @@
       "name": "news-app",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 3003
+      "port": 3004,
+      "autoPort": true
     }
   ]
 }

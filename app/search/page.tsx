@@ -3,23 +3,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/constants';
-import { Logo } from '@/components/Logo';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function SearchPage() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<any[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortBy, setSortBy] = useState<'relevance' | 'newest' | 'views'>('relevance');
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -58,25 +51,10 @@ export default function SearchPage() {
     setFilteredArticles(results);
   }, [articles, searchQuery, selectedCategory, sortBy, language]);
 
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
   const getUniqueUniversities = () => Array.from(new Set(articles.map((a: any) => a.university))).sort();
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/"><Logo size="md" showText={true} language={language} /></Link>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')} className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
-              {language === 'ar' ? 'EN' : 'AR'}
-            </button>
-            <button onClick={() => setDarkMode(!darkMode)} className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
-      </header>
-
       <section className="py-8 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-6">{t('البحث عن الأخبار', 'Search News')}</h1>
@@ -136,12 +114,6 @@ export default function SearchPage() {
           )}
         </div>
       </section>
-
-      <footer className="border-t border-gray-200 dark:border-gray-800 py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-          <p>© 2026 Universities-Voice. {t('جميع الحقوق محفوظة', 'All rights reserved')}.</p>
-        </div>
-      </footer>
     </>
   );
 }

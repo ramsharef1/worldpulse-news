@@ -1,22 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CATEGORIES, NAV_ITEMS, FOOTER_LINKS } from '@/lib/constants';
-import { Logo } from '@/components/Logo';
+import { useLanguage } from '@/lib/LanguageContext';
+import { CATEGORIES } from '@/lib/constants';
 import { TrendingWidget } from '@/components/TrendingWidget';
 import { UNIVERSITIES_DATA } from '@/lib/universities-data';
 
 export default function Home() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, t } = useLanguage();
   const [featuredArticles, setFeaturedArticles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
 
   useEffect(() => {
     fetchFeaturedArticles();
@@ -35,53 +28,8 @@ export default function Home() {
     }
   };
 
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
-
   return (
     <>
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <a href="/" className="hover:opacity-80 transition">
-            <Logo size="md" showText={true} language={language} />
-          </a>
-
-          {/* Controls */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {language === 'ar' ? 'EN' : 'AR'}
-            </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex gap-6 overflow-x-auto">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="whitespace-nowrap px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900 text-sm font-medium"
-              >
-                {t(item.name_ar, item.name_en)}
-              </a>
-            ))}
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
         <div className="container mx-auto px-4">
@@ -236,13 +184,6 @@ export default function Home() {
           </button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-          <p>© 2024 Universities-Voice. {t('جميع الحقوق محفوظة', 'All rights reserved')}.</p>
-        </div>
-      </footer>
     </>
   );
 }

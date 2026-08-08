@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Header } from '@/components/Header';
+import { useState, useMemo } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
 
 interface FacultyMember {
   id: number;
@@ -294,21 +294,10 @@ const TITLE_COLORS: Record<string, string> = {
 };
 
 export default function FacultyPage() {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, t } = useLanguage();
   const [search, setSearch] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedTitle, setSelectedTitle] = useState<string>('All');
-
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [language]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
 
   const universities = useMemo(
     () => Array.from(new Set(MOCK_FACULTY.map(f => f.university_en))).sort(),
@@ -334,160 +323,151 @@ export default function FacultyPage() {
   }, [search, selectedUniversity, selectedTitle]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-      <Header
-        language={language}
-        darkMode={darkMode}
-        onLanguageChange={setLanguage}
-        onDarkModeChange={setDarkMode}
-      />
-
-      <main className="container mx-auto px-4 py-10">
-        {/* Page title */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">{t('أعضاء هيئة التدريس', 'Faculty Directory')}</h1>
-          <p className="mt-2 text-gray-500 dark:text-gray-400">
-            {t('تعرّف على أعضاء هيئة التدريس في الجامعات الأردنية', 'Meet the faculty members of Jordanian universities')}
-          </p>
-        </div>
-
-        {/* Search & Filters */}
-        <div className="space-y-4 mb-8">
-          {/* Search */}
-          <div className="relative">
-            <svg className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t('ابحث بالاسم أو التخصص...', 'Search by name or specialization...')}
-              className="w-full ps-10 pe-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-3 items-center">
-            {/* University filter */}
-            <select
-              value={selectedUniversity}
-              onChange={e => setSelectedUniversity(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm"
-            >
-              <option value="all">{t('كل الجامعات', 'All Universities')}</option>
-              {universities.map(u => {
-                const member = MOCK_FACULTY.find(f => f.university_en === u);
-                return (
-                  <option key={u} value={u}>
-                    {language === 'ar' ? member?.university_ar : u}
-                  </option>
-                );
-              })}
-            </select>
-
-            {/* Title filter chips */}
-            <div className="flex flex-wrap gap-2">
-              {TITLE_FILTERS.map(title => (
-                <button
-                  key={title}
-                  onClick={() => setSelectedTitle(title)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
-                    selectedTitle === title
-                      ? 'bg-blue-700 text-white border-blue-700'
-                      : 'border-gray-300 dark:border-gray-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {t(TITLE_LABELS[title].ar, TITLE_LABELS[title].en)}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Results count */}
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-          {t(`${filtered.length} عضو هيئة تدريس`, `${filtered.length} faculty members`)}
+    <main className="container mx-auto px-4 py-10">
+      {/* Page title */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold">{t('أعضاء هيئة التدريس', 'Faculty Directory')}</h1>
+        <p className="mt-2 text-gray-500 dark:text-gray-400">
+          {t('تعرّف على أعضاء هيئة التدريس في الجامعات الأردنية', 'Meet the faculty members of Jordanian universities')}
         </p>
+      </div>
 
-        {/* Faculty grid */}
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-            <svg className="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <p className="text-lg">{t('لا يوجد أعضاء مطابقون', 'No faculty members found')}</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(member => (
-              <div
-                key={member.id}
-                className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-600 transition text-center"
+      {/* Search & Filters */}
+      <div className="space-y-4 mb-8">
+        {/* Search */}
+        <div className="relative">
+          <svg className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={t('ابحث بالاسم أو التخصص...', 'Search by name or specialization...')}
+            className="w-full ps-10 pe-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-3 items-center">
+          {/* University filter */}
+          <select
+            value={selectedUniversity}
+            onChange={e => setSelectedUniversity(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm"
+          >
+            <option value="all">{t('كل الجامعات', 'All Universities')}</option>
+            {universities.map(u => {
+              const member = MOCK_FACULTY.find(f => f.university_en === u);
+              return (
+                <option key={u} value={u}>
+                  {language === 'ar' ? member?.university_ar : u}
+                </option>
+              );
+            })}
+          </select>
+
+          {/* Title filter chips */}
+          <div className="flex flex-wrap gap-2">
+            {TITLE_FILTERS.map(title => (
+              <button
+                key={title}
+                onClick={() => setSelectedTitle(title)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
+                  selectedTitle === title
+                    ? 'bg-blue-700 text-white border-blue-700'
+                    : 'border-gray-300 dark:border-gray-700 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
+                }`}
               >
-                {/* Avatar */}
-                <div className="relative mx-auto mb-4 w-24 h-24">
-                  <img
-                    src={member.avatar}
-                    alt={language === 'ar' ? member.name_ar : member.name_en}
-                    className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow"
-                  />
-                  {/* Title badge */}
-                  <span className={`absolute -bottom-1 start-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${TITLE_COLORS[member.title_en]}`}
-                    style={{ transform: 'translateX(-50%)' }}>
-                    {t(TITLE_LABELS[member.title_en].ar, TITLE_LABELS[member.title_en].en)}
-                  </span>
-                </div>
-
-                {/* Name */}
-                <h2 className="font-bold text-gray-900 dark:text-gray-100 mt-3 leading-snug text-sm">
-                  {language === 'ar' ? member.name_ar : member.name_en}
-                </h2>
-
-                {/* University */}
-                <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mt-1">
-                  {language === 'ar' ? member.university_ar : member.university_en}
-                </p>
-
-                {/* Department */}
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  {language === 'ar' ? member.department_ar : member.department_en}
-                </p>
-
-                {/* Specialization */}
-                <div className="mt-3 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
-                    {language === 'ar' ? member.specialization_ar : member.specialization_en}
-                  </p>
-                </div>
-
-                {/* Stats & Email */}
-                <div className="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">{member.publications_count}</span>
-                    <span>{t('بحث', 'papers')}</span>
-                  </span>
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    {t('راسلني', 'Email')}
-                  </a>
-                </div>
-              </div>
+                {t(TITLE_LABELS[title].ar, TITLE_LABELS[title].en)}
+              </button>
             ))}
           </div>
-        )}
-      </main>
-    </div>
+        </div>
+      </div>
+
+      {/* Results count */}
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+        {t(`${filtered.length} عضو هيئة تدريس`, `${filtered.length} faculty members`)}
+      </p>
+
+      {/* Faculty grid */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <svg className="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <p className="text-lg">{t('لا يوجد أعضاء مطابقون', 'No faculty members found')}</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {filtered.map(member => (
+            <div
+              key={member.id}
+              className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-600 transition text-center"
+            >
+              {/* Avatar */}
+              <div className="relative mx-auto mb-4 w-24 h-24">
+                <img
+                  src={member.avatar}
+                  alt={language === 'ar' ? member.name_ar : member.name_en}
+                  className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow"
+                />
+                {/* Title badge */}
+                <span className={`absolute -bottom-1 start-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${TITLE_COLORS[member.title_en]}`}
+                  style={{ transform: 'translateX(-50%)' }}>
+                  {t(TITLE_LABELS[member.title_en].ar, TITLE_LABELS[member.title_en].en)}
+                </span>
+              </div>
+
+              {/* Name */}
+              <h2 className="font-bold text-gray-900 dark:text-gray-100 mt-3 leading-snug text-sm">
+                {language === 'ar' ? member.name_ar : member.name_en}
+              </h2>
+
+              {/* University */}
+              <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mt-1">
+                {language === 'ar' ? member.university_ar : member.university_en}
+              </p>
+
+              {/* Department */}
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {language === 'ar' ? member.department_ar : member.department_en}
+              </p>
+
+              {/* Specialization */}
+              <div className="mt-3 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
+                  {language === 'ar' ? member.specialization_ar : member.specialization_en}
+                </p>
+              </div>
+
+              {/* Stats & Email */}
+              <div className="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400">
+                <span className="flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">{member.publications_count}</span>
+                  <span>{t('بحث', 'papers')}</span>
+                </span>
+                <a
+                  href={`mailto:${member.email}`}
+                  className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  {t('راسلني', 'Email')}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </main>
   );
 }

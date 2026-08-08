@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
-import { Logo } from '@/components/Logo';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function SignupPage() {
   const router = useRouter();
   const { signup, isLoading, isAuthenticated } = useAuth();
+  const { t } = useLanguage();
 
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [darkMode, setDarkMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -30,16 +29,6 @@ export default function SignupPage() {
       router.push('/');
     }
   }, [isAuthenticated, router]);
-
-  // Setup HTML attributes for language and theme
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
-
-  // Translation function
-  const t = (ar: string, en: string) => (language === 'ar' ? ar : en);
 
   // Calculate password strength (0-4)
   const getPasswordStrength = (password: string): number => {
@@ -146,216 +135,189 @@ export default function SignupPage() {
   };
 
   return (
-    <>
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="hover:opacity-80 transition">
-            <Logo size="md" showText={true} language={language} />
-          </a>
+    <main className="flex-1 flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Form Card */}
+        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
+          <h1 className="text-3xl font-bold mb-2 text-center">
+            {t('إنشاء حساب', 'Create Account')}
+          </h1>
+          <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
+            {t('انضم إلى مجتمع أخبار الجامعات', 'Join Universities-Voice community')}
+          </p>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {language === 'ar' ? 'EN' : 'AR'}
-            </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
-      </header>
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg">
+              <p className="text-red-800 dark:text-red-200 text-sm">{errorMessage}</p>
+            </div>
+          )}
 
-      {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
-          {/* Form Card */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
-            <h1 className="text-3xl font-bold mb-2 text-center">
-              {t('إنشاء حساب', 'Create Account')}
-            </h1>
-            <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
-              {t('انضم إلى مجتمع أخبار الجامعات', 'Join Universities-Voice community')}
-            </p>
+          {/* Success Message */}
+          {successMessage && (
+            <div className="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg">
+              <p className="text-green-800 dark:text-green-200 text-sm">{successMessage}</p>
+            </div>
+          )}
 
-            {/* Error Message */}
-            {errorMessage && (
-              <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg">
-                <p className="text-red-800 dark:text-red-200 text-sm">{errorMessage}</p>
-              </div>
-            )}
-
-            {/* Success Message */}
-            {successMessage && (
-              <div className="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg">
-                <p className="text-green-800 dark:text-green-200 text-sm">{successMessage}</p>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name Arabic */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('الاسم (عربي)', 'Name (Arabic)')}
-                </label>
-                <input
-                  type="text"
-                  name="name_ar"
-                  value={formData.name_ar}
-                  onChange={handleInputChange}
-                  placeholder={t('أدخل اسمك بالعربية', 'Enter your name in Arabic')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                  disabled={isLoading}
-                />
-              </div>
-
-              {/* Name English */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('الاسم (إنجليزي)', 'Name (English)')}
-                </label>
-                <input
-                  type="text"
-                  name="name_en"
-                  value={formData.name_en}
-                  onChange={handleInputChange}
-                  placeholder={t('أدخل اسمك بالإنجليزية', 'Enter your name in English')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                  disabled={isLoading}
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('البريد الإلكتروني', 'Email Address')}
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder={t('البريد@مثال.com', 'email@example.com')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                  disabled={isLoading}
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('كلمة المرور', 'Password')}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder={t('أدخل كلمة المرور', 'Enter password')}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                  >
-                    {showPassword ? '🙈' : '👁️'}
-                  </button>
-                </div>
-
-                {/* Password Strength Indicator */}
-                {formData.password && (
-                  <div className="mt-3 space-y-2">
-                    <div className="flex gap-1">
-                      {[...Array(4)].map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-2 flex-1 rounded ${
-                            i < passwordStrength
-                              ? getStrengthColor()
-                              : 'bg-gray-300 dark:bg-gray-700'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {t('قوة كلمة المرور:', 'Password strength:')} {getStrengthLabel()}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      {t(
-                        '8 أحرف على الأقل، أحرف كبيرة وصغيرة وأرقام',
-                        'At least 8 characters, uppercase, lowercase, and numbers'
-                      )}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('تأكيد كلمة المرور', 'Confirm Password')}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder={t('أعد إدخال كلمة المرور', 'Re-enter password')}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                  >
-                    {showConfirmPassword ? '🙈' : '👁️'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name Arabic */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('الاسم (عربي)', 'Name (Arabic)')}
+              </label>
+              <input
+                type="text"
+                name="name_ar"
+                value={formData.name_ar}
+                onChange={handleInputChange}
+                placeholder={t('أدخل اسمك بالعربية', 'Enter your name in Arabic')}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg transition"
-              >
-                {isLoading ? t('جاري المعالجة...', 'Processing...') : t('إنشاء حساب', 'Create Account')}
-              </button>
-            </form>
+              />
+            </div>
 
-            {/* Login Link */}
-            <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
-              {t('هل لديك حساب بالفعل؟', 'Already have an account?')}{' '}
-              <a
-                href="/auth/login"
-                className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-              >
-                {t('تسجيل الدخول', 'Login')}
-              </a>
-            </p>
-          </div>
+            {/* Name English */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('الاسم (إنجليزي)', 'Name (English)')}
+              </label>
+              <input
+                type="text"
+                name="name_en"
+                value={formData.name_en}
+                onChange={handleInputChange}
+                placeholder={t('أدخل اسمك بالإنجليزية', 'Enter your name in English')}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                disabled={isLoading}
+              />
+            </div>
 
-          {/* Info Box */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-300">
-              {t(
-                'ℹ️ هذا التطبيق يستخدم التخزين المحلي للبيانات. البيانات آمنة فقط في هذا المتصفح.',
-                'ℹ️ This app uses local storage. Data is stored securely in this browser.'
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('البريد الإلكتروني', 'Email Address')}
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder={t('البريد@مثال.com', 'email@example.com')}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('كلمة المرور', 'Password')}
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder={t('أدخل كلمة المرور', 'Enter password')}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {formData.password && (
+                <div className="mt-3 space-y-2">
+                  <div className="flex gap-1">
+                    {[...Array(4)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-2 flex-1 rounded ${
+                          i < passwordStrength
+                            ? getStrengthColor()
+                            : 'bg-gray-300 dark:bg-gray-700'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {t('قوة كلمة المرور:', 'Password strength:')} {getStrengthLabel()}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {t(
+                      '8 أحرف على الأقل، أحرف كبيرة وصغيرة وأرقام',
+                      'At least 8 characters, uppercase, lowercase, and numbers'
+                    )}
+                  </p>
+                </div>
               )}
-            </p>
-          </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('تأكيد كلمة المرور', 'Confirm Password')}
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder={t('أعد إدخال كلمة المرور', 'Re-enter password')}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg transition"
+            >
+              {isLoading ? t('جاري المعالجة...', 'Processing...') : t('إنشاء حساب', 'Create Account')}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
+            {t('هل لديك حساب بالفعل؟', 'Already have an account?')}{' '}
+            <a
+              href="/auth/login"
+              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              {t('تسجيل الدخول', 'Login')}
+            </a>
+          </p>
         </div>
-      </main>
-    </>
+
+        {/* Info Box */}
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-sm text-blue-800 dark:text-blue-300">
+            {t(
+              'ℹ️ هذا التطبيق يستخدم التخزين المحلي للبيانات. البيانات آمنة فقط في هذا المتصفح.',
+              'ℹ️ This app uses local storage. Data is stored securely in this browser.'
+            )}
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }

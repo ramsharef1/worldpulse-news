@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Logo } from '@/components/Logo';
+import { useLanguage } from '@/lib/LanguageContext';
 import { Button, Grid, ArticleCard, Divider, Badge } from '@/components/UIComponents';
-import { CATEGORIES, NAV_ITEMS, FOOTER_LINKS, UNIVERSITIES, PAGINATION } from '@/lib/constants';
+import { CATEGORIES, PAGINATION } from '@/lib/constants';
 
 interface Article {
   id: string;
@@ -38,14 +38,13 @@ const slugToCategoryMap: Record<CategorySlug, string> = {
 export default function CategoryNewsPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const { language, t } = useLanguage();
   const categorySlug = (params?.category as CategorySlug) || 'academic';
 
   const categoryName = slugToCategoryMap[categorySlug] || 'Academic';
   const category = CATEGORIES.find((c) => c.slug === categorySlug);
 
   // State management
-  const [language, setLanguage] = useState<'ar' | 'en'>('en');
-  const [darkMode, setDarkMode] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,13 +57,6 @@ export default function CategoryNewsPage() {
   const [selectedUniversity, setSelectedUniversity] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'most-viewed'>('newest');
   const [displayedCount, setDisplayedCount] = useState(PAGINATION.ARTICLES_PER_PAGE);
-
-  // Update document language and theme
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [language, darkMode]);
 
   // Fetch articles
   useEffect(() => {
@@ -156,8 +148,6 @@ export default function CategoryNewsPage() {
     }
   };
 
-  const t = (ar: string, en: string): string => (language === 'ar' ? ar : en);
-
   const getCategoryLabel = (): string => {
     return language === 'ar' ? category?.name_ar || categoryName : categoryName;
   };
@@ -169,50 +159,7 @@ export default function CategoryNewsPage() {
   ).filter((u) => u).slice(0, 15);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="hover:opacity-80 transition">
-            <Logo size="md" showText={true} language={language} />
-          </Link>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold transition"
-              aria-label={t('تبديل اللغة', 'Toggle language')}
-            >
-              {language === 'ar' ? 'EN' : 'AR'}
-            </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-              aria-label={t('تبديل الوضع المظلم', 'Toggle dark mode')}
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex gap-6 overflow-x-auto">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="whitespace-nowrap px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900 text-sm font-medium transition-colors"
-              >
-                {t(item.name_ar, item.name_en)}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </nav>
-
+    <>
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4">
         <nav className="flex gap-2 text-sm" aria-label="Breadcrumb">
@@ -452,53 +399,6 @@ export default function CategoryNewsPage() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">
-                  {t('عن المنصة', 'About')}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t(
-                    'منصة أخبار شاملة لجميع الجامعات الأردنية',
-                    'A comprehensive news platform for all Jordanian universities'
-                  )}
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">
-                  {t('الروابط السريعة', 'Quick Links')}
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  {Object.values(FOOTER_LINKS).map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        {t(link.name_ar, link.name_en)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <Divider className="my-8" />
-
-            <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-              <p>
-                &copy; 2024 {t('صوت الجامعات', 'Universities-Voice')}. {t('جميع الحقوق محفوظة', 'All rights reserved')}.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }
